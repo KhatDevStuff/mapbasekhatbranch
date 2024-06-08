@@ -3235,21 +3235,30 @@ void CNPC_Combine::NotifyDeadFriend ( CBaseEntity* pFriend )
 // DeathSound 
 //=========================================================
 #ifdef MAPBASE
-void CNPC_Combine::DeathSound ( const CTakeDamageInfo &info )
+void CNPC_Combine::DeathSound(const CTakeDamageInfo &info)
 #else
-void CNPC_Combine::DeathSound ( void )
+void CNPC_Combine::DeathSound(void)
 #endif
 {
 #ifdef COMBINE_SOLDIER_USES_RESPONSE_SYSTEM
-	AI_CriteriaSet set;
-	ModifyOrAppendDamageCriteria(set, info);
-	SpeakIfAllowed(TLK_CMB_DIE, set, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+    AI_CriteriaSet set;
+    ModifyOrAppendDamageCriteria(set, info);
+    SpeakIfAllowed(TLK_CMB_DIE, set, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 #else
-	// NOTE: The response system deals with this at the moment
-	if ( GetFlags() & FL_DISSOLVING )
-		return;
+    // NOTE: The response system deals with this at the moment
+    if (GetFlags() & FL_DISSOLVING)
+        return;
 
-	m_Sentences.Speak( "COMBINE_DIE", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS );
+    // Check if the damage type is DMG_DISSOLVE
+    if (info.GetDamageType() & DMG_DISSOLVE)
+    {
+        // If dissolve, then please just play this sound.
+		m_Sentences.Speak("COMBINE_DISSOLVE", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+        return;
+    }
+
+    // Default death sound
+    m_Sentences.Speak("COMBINE_DIE", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 #endif
 }
 
