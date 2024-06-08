@@ -612,7 +612,7 @@ void CNPC_Combine::PrescheduleThink()
 		// Only do this if it won't be immediately shut off again.
 		if( GetNavigator()->GetPathTimeToGoal() > 1.0f )
 		{
-			m_MoveAndShootOverlay.SuspendMoveAndShoot( 5.0f );
+			m_MoveAndShootOverlay.SuspendMoveAndShoot( 8.0f );
 			m_flStopMoveShootTime = FLT_MAX;
 		}
 	}
@@ -712,7 +712,7 @@ bool CNPC_Combine::ShouldMoveAndShoot()
 	m_flStopMoveShootTime = FLT_MAX;
 
 	if( IsCurSchedule( SCHED_COMBINE_HIDE_AND_RELOAD, false ) )
-		m_flStopMoveShootTime = gpGlobals->curtime + random->RandomFloat( 0.4f );
+		return false;
 
 	if( IsCurSchedule( SCHED_TAKE_COVER_FROM_BEST_SOUND, false ) )
 		return false;
@@ -722,9 +722,6 @@ bool CNPC_Combine::ShouldMoveAndShoot()
 
 	if( IsCurSchedule( SCHED_COMBINE_RUN_AWAY_FROM_BEST_SOUND, false ) )
 		return false;
-
-	if( HasCondition( COND_NO_PRIMARY_AMMO, false ) )
-		m_flStopMoveShootTime = gpGlobals->curtime + random->RandomFloat( 0.4f, 0.6f );
 
 	if( m_pSquad && IsCurSchedule( SCHED_COMBINE_TAKE_COVER1, false ) )
 		m_flStopMoveShootTime = gpGlobals->curtime + random->RandomFloat( 0.4f, 0.6f );
@@ -909,7 +906,7 @@ void CNPC_Combine::RunTaskChaseEnemyContinuously( const Task_t *pTask )
 void CNPC_Combine::StartTask( const Task_t *pTask )
 {
 	// NOTE: This reset is required because we change it in TASK_COMBINE_CHASE_ENEMY_CONTINUOUSLY
-	m_MoveAndShootOverlay.SetInitialDelay( 0.75 );
+	m_MoveAndShootOverlay.SetInitialDelay( 2 );
 
 	switch ( pTask->iTask )
 	{

@@ -992,7 +992,7 @@ void CNPC_AttackHelicopter::Precache( void )
 		UTIL_PrecacheOther( "grenade_helicopter" );
 		UTIL_PrecacheOther( "env_fire_trail" );
 		Chopper_PrecacheChunks( this );
-		PrecacheModel("models/combine_soldier.mdl");
+		PrecacheModel("models/combine_pilot.mdl.mdl");
 	}
 
 	PrecacheScriptSound("NPC_AttackHelicopter.ChargeGun");
@@ -3514,7 +3514,7 @@ void CNPC_AttackHelicopter::DropCorpse( int nDamage )
 	vecForceVector.z = 0.5;
 	vecForceVector *= forceScale;
 
-	CBaseEntity *pGib = CreateRagGib( "models/combine_soldier.mdl", GetAbsOrigin(), GetAbsAngles(), vecForceVector );
+	CBaseEntity *pGib = CreateRagGib( "models/combine_pilot.mdl", GetAbsOrigin(), GetAbsAngles(), vecForceVector );
 	if ( pGib )
 	{
 		pGib->SetOwnerEntity( this );
