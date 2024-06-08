@@ -58,7 +58,7 @@ ConVar npc_combine_fixed_shootpos( "npc_combine_fixed_shootpos", "0", FCVAR_NONE
 #ifndef MAPBASE
 #define COMBINE_GRENADE_THROW_SPEED 650
 #define COMBINE_GRENADE_TIMER		3.5
-#define COMBINE_GRENADE_FLUSH_TIME	3.0		// Don't try to flush an enemy who has been out of sight for longer than this.
+#define COMBINE_GRENADE_FLUSH_TIME	5		// Don't try to flush an enemy who has been out of sight for longer than this.
 #define COMBINE_GRENADE_FLUSH_DIST	256.0	// Don't try to flush an enemy who has moved farther than this distance from the last place I saw him.
 #endif
 
@@ -482,7 +482,7 @@ void CNPC_Combine::Spawn( void )
 	m_HackedGunPos = Vector ( 0, 0, 55 );
 
 	m_flStopMoveShootTime = FLT_MAX; // Move and shoot defaults on.
-	m_MoveAndShootOverlay.SetInitialDelay( 0.75 ); // But with a bit of a delay.
+	m_MoveAndShootOverlay.SetInitialDelay( 0.5 ); // But with a bit of a delay.
 
 	m_flNextLostSoundTime		= 0;
 	m_flAlertPatrolTime			= 0;
@@ -718,7 +718,7 @@ bool CNPC_Combine::ShouldMoveAndShoot()
 		return false;
 
 	if( IsCurSchedule( SCHED_COMBINE_TAKE_COVER_FROM_BEST_SOUND, false ) )
-		return false;
+		m_flStopMoveShootTime = gpGlobals->curtime + random->RandomFloat(0.4f, 0.9f);
 
 	if( IsCurSchedule( SCHED_COMBINE_RUN_AWAY_FROM_BEST_SOUND, false ) )
 		return false;
@@ -906,7 +906,7 @@ void CNPC_Combine::RunTaskChaseEnemyContinuously( const Task_t *pTask )
 void CNPC_Combine::StartTask( const Task_t *pTask )
 {
 	// NOTE: This reset is required because we change it in TASK_COMBINE_CHASE_ENEMY_CONTINUOUSLY
-	m_MoveAndShootOverlay.SetInitialDelay( 2 );
+	m_MoveAndShootOverlay.SetInitialDelay( 0.5 );
 
 	switch ( pTask->iTask )
 	{
@@ -3831,7 +3831,7 @@ WeaponProficiency_t CNPC_Combine::CalcWeaponProficiency( CBaseCombatWeapon *pWea
 	else if( FClassnameIs( pWeapon, "weapon_smg1" ) )
 #endif
 	{
-		return WEAPON_PROFICIENCY_GOOD;
+		return WEAPON_PROFICIENCY_VERY_GOOD;
 	}
 #ifdef MAPBASE
 	else if ( pWeapon->ClassMatches( gm_isz_class_Pistol ) )
